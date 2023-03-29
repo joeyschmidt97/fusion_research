@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import re
 import pandas as pd
@@ -96,7 +98,15 @@ def out_neo_data_2_dict():
             else:
                 continue
 
+
         species_list = species_df.to_dict('records')
+        for spec in species_list:
+            for key, value in spec.items():
+                try:
+                    spec[key] = float(value)
+                except:
+                    pass
+        
         info_dict['species'] = species_list
 
         # Print resulting dictionary
