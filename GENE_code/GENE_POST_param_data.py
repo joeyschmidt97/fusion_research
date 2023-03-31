@@ -8,19 +8,19 @@ sys.path.insert(1, '/global/homes/j/joeschm/ifs_scripts')
 from genetools import Parameters
 
 
-def param_to_dict(parameter_file, filepath):
+def param_to_dict(parameter_file, parameter_filepath):
     par = Parameters()
     par.Read_Pars(parameter_file)  #read parameter file
     parameter_dict = par.pardict 
 
-    #If the diagdir variable is different than the current directory then overwrite it
-    if parameter_dict['diagdir'] != filepath:
-        parameter_dict['diagdir'] = filepath
-    
+    #Add filename and filepath (can be different than diagdir) to dict
+    parameter_dict['filename'] = parameter_file
+    parameter_dict['filepath'] = parameter_filepath
+
     return parameter_dict
 
 
-def param_list(filepath):
+def parameters_to_list(filepath):
     parameter_list = []
 
     #Change into the current filepath and get all files
