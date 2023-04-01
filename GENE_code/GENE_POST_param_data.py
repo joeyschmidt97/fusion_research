@@ -9,6 +9,7 @@ from genetools import Parameters
 
 
 def param_to_dict(parameter_file, parameter_filepath):
+    
     par = Parameters()
     par.Read_Pars(parameter_file)  #read parameter file
     parameter_dict = par.pardict 
@@ -62,3 +63,10 @@ def parameters_table(param_dict):
     param_df = pd.DataFrame(list(param_dict.items()), columns=['key', 'value'])
     return param_df
 
+
+if __name__=="__main__":
+    filepath = os.getcwd()
+    parameter_list = parameters_to_list(filepath)
+
+    for parameter in parameter_list:
+        print(parameter['omn1'])
