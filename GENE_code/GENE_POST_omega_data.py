@@ -2,6 +2,9 @@
 
 # This code will go into all the sub-directories and extract all omega data 
 import os
+import numpy as np
+from GENE_POST_param_data import param_to_dict
+
 
 
 def omega_to_dict(omega_file, omega_filepath):
@@ -50,9 +53,43 @@ def omegas_to_list(filepath):
     if (len(omega_list) == 0) and not empty_omega:
         print('There are no files starting with "omega" in:', filepath)
 
-
     return omega_list
 
 
-# if __name__=="__main__":
-#     omegas_to_list(os.getcwd())
+def omega_to_Hz(omega_dict):
+    omega_filepath = omega_dict['filepath']
+    os.chdir(omega_filepath)
+
+    omega_file = omega_dict['filename']
+    omega_cs = omega_dict['omega (cs/a)']
+    gamma_cs = omega_dict['gamma (cs/a)']
+
+    if '_' in omega_file:
+        suffix = omega_file[-4:]
+        parameter_file = 'parameters_' + suffix
+    else:
+        parameter_file = 'parameters.dat'
+
+    parameter_dict = param_to_dict(parameter_file, omega_filepath)
+    TJ = parameter_dict['Tref']      #ion temperature in (J)
+    mi = parameter_dict['mref']      #ion mass
+    Lf = parameter_dict['Lref']      #reference length of the device
+    cs = np.sqrt(TJ/mi)              #speed of sound in a plasma 
+    om_ref = cs/Lf                   #reference omega
+    
+    omega_dict['omega (kHz)'] = omega_cs*om_ref/1000.0/(2.0*np.pi) #convert omega to kHz
+    omega_dict['gamma (kHz)'] = gamma_cs*om_ref/1000.0/(2.0*np.pi) #convert omega to kHz
+
+    return omega_dict
+
+
+
+if __name__ == "__main__":
+    filepath = os.getcwd()
+    omega_list = omegas_to_list(filepath)
+
+    for omega_dict in omega_list:
+        
+        omega_to_Hz(omega_dict)
+
+        print(omega_dict)
