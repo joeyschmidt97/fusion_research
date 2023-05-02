@@ -54,6 +54,22 @@ def simulations_to_list(filepath):
     return simulation_list
 
 
+def simulation_sorter(filepath, sort_type = 'CONVERGED'):
+    sorted_sim_list = []
+
+    all_sim_list = simulations_to_list(filepath)
+
+    for sim_dict in all_sim_list:
+        
+        if sort_type == sim_dict['status']:
+            sorted_sim_list.append(sim_dict)
+        elif sort_type == 'ALL':
+            sorted_sim_list.append(sim_dict)
+
+    print(sorted_sim_list)
+
+    return sorted_sim_list
+
 
 # ~~~AUXILLARY FUNCTIONS~~~
 
@@ -135,6 +151,9 @@ def simulation_status(simulation_files):
 if __name__ == "__main__":
     cwd = os.getcwd()
     simulation_list = simulations_to_list(cwd)
+
+
+    # sort_sim_list = simulation_sorter(cwd)
 
     for simulation in simulation_list:
         print(simulation['filepath'])
