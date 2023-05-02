@@ -3,8 +3,8 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-from GENE_POST_all_sim_data import simulations_to_data
-from GENE_POST_omega_data import omega_to_Hz
+from GENE_POST_all_sim_data import simulations_to_list
+# from GENE_POST_omega_data import omega_to_Hz
 from GENE_POST_param_data import parameters_to_list
 
 
@@ -33,7 +33,8 @@ def compare_str_for_plots(filepath, compare_str):
 
     return compare_value
 
-def compare_growth_rates(filepath_list, compare_str='nz0', plot_type = 'global'):
+
+def compare_growth_rates(filepath_list, compare_str='nz0', plot_type = 'kymin'):
     import itertools
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
@@ -72,18 +73,13 @@ def collect_growth_rates(filepath):
         growth_data_dict[key] = []
     
 
-    simulation_list = simulations_to_data(filepath)
-
+    simulation_list = simulations_to_list(filepath)
     for simulation_dict in simulation_list:
-        filepath = simulation_dict['filepath']
-        parameter_dict_list = simulation_dict['parameters']
-        omega_dict_list = simulation_dict['omegas']
+        param_dict = simulation_dict['parameter_file']
+        omega_dict = simulation_dict['omega_file']
         
-        for omega_dict in omega_dict_list:
-            omega_dict = omega_to_Hz(omega_dict)
-            
-            for key in keys:
-                growth_data_dict[key].append(omega_dict[key])
+        for key in keys:
+            growth_data_dict[key].append(omega_dict[key])
         
     return growth_data_dict
 
@@ -103,8 +99,8 @@ def log_plot(plotting_dict, x_name, y_name, ax=None, label=None, **kwargs):
     y_sorted = y[idx]
 
     # # print out values of x and y
-    # x_print = [float(i) for i in x_sorted]
-    # print('x:', x_print)
+    x_print = [float(i) for i in x_sorted]
+    print('x:', x_print)
     # print('y:', y_sorted)
     
     ax = ax or plt.gca()
@@ -117,12 +113,10 @@ def log_plot(plotting_dict, x_name, y_name, ax=None, label=None, **kwargs):
 
 
 
-def plot_growth_rates(filepath, plot_type = 'global'):
+def plot_growth_rates(filepath, plot_type = 'kymin'):
     growth_data_dict = collect_growth_rates(filepath)
 
     print('filepath:', filepath)
-
-    plot_type = 'kymin'
 
     fig, (ax1, ax2) = plt.subplots(1,2, figsize=(10, 4))
     if plot_type == 'global':

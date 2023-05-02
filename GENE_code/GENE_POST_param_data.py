@@ -24,45 +24,52 @@ def param_to_dict(parameter_filepath):
     parameter_dict['filename'] = parameter_file
     parameter_dict['filepath'] = parameter_directory
 
+    # if '_' in parameter_file:
+    #     suffix = parameter_file[-4:]
+    # else:
+    #     suffix = '.dat'
+    
+    # parameter_dict['suffix'] = suffix
+
     #add other simulation data filepaths to parameters dict
-    parameter_dict = get_sim_filepath(parameter_dict)
+    # parameter_dict = get_sim_filepath(parameter_dict)
 
     return parameter_dict
 
 
 
-def get_sim_filepath(param_dict):
-    sim_filepaths = []
+# def get_sim_filepath(param_dict):
+#     sim_filepaths = []
 
-    #get parameter filename and path
-    param_filename = param_dict['filename']
-    param_directory = param_dict['filepath']
+#     #get parameter filename and path
+#     param_filename = param_dict['filename']
+#     param_directory = param_dict['filepath']
 
-    #extract suffix if present in parameters filename
-    if '_' in param_filename:
-        suffix = param_filename[-4:]
-    else:
-        suffix = ''
+#     #extract suffix if present in parameters filename
+#     if '_' in param_filename:
+#         suffix = param_filename[-4:]
+#     else:
+#         suffix = ''
     
-    #get files from parameters directory
-    filelist = os.listdir(param_directory)
-    filelist.sort()
+#     #get files from parameters directory
+#     filelist = os.listdir(param_directory)
+#     filelist.sort()
 
-    for filename in filelist:
-        filepath = os.path.join(param_directory, filename) #get the absolute file path
+#     for filename in filelist:
+#         filepath = os.path.join(param_directory, filename) #get the absolute file path
 
-        check1 = os.path.isfile(filepath)   #check that file is actually a file
-        check2 = suffix in filename         #check that the suffix (i.e. 0002) is in parameters, else '' is always in a string
-        check3 = (not filename.startswith('parameters')) #check that file is NOT a parameters file
+#         check1 = os.path.isfile(filepath)   #check that file is actually a file
+#         check2 = suffix in filename         #check that the suffix (i.e. 0002) is in parameters, else '' is always in a string
+#         check3 = (not filename.startswith('parameters')) #check that file is NOT a parameters file
 
-        #if all checks are fulfilled add the file to the filepath list
-        if check1 and check2 and check3:
-            sim_filepaths.append(filepath)
+#         #if all checks are fulfilled add the file to the filepath list
+#         if check1 and check2 and check3:
+#             sim_filepaths.append(filepath)
 
-    #add the filepath list to the parameter dictionary
-    param_dict['sim_files'] = sim_filepaths
+#     #add the filepath list to the parameter dictionary
+#     param_dict['sim_files'] = sim_filepaths
     
-    return param_dict
+#     return param_dict
 
 
 
@@ -137,18 +144,33 @@ def parameters_to_list(filepath):
 
 
 
+def print_parameter(filepath, key_list):
 
-
-if __name__=="__main__":
-    filepath = os.getcwd()
-
-    print(filepath)
     parameter_list = parameters_to_list(filepath)
 
-    for param_dict in parameter_list:
-        print(param_dict['kymin'], param_dict['filename'])
+    print(filepath)
 
-        # for sim_filepath in param_dict['sim_files']:
-        #     filename = os.path.basename(sim_filepath)
-        #     print(sim_filepath)
-    print('')
+    if isinstance(key_list, str):
+        for parameter in parameter_list:
+            print(os.path.basename(parameter['filepath']), '///', parameter['filepath'], key_list,':', parameter[key_list])
+
+    elif isinstance(key_list, list):
+        for parameter in parameter_list:
+            print(os.path.basename(parameter['filepath']), '///', parameter['filename'])
+            for key in key_list:
+                print(key,':', parameter[key])
+
+
+# if __name__=="__main__":
+#     filepath = os.getcwd()
+
+#     print(filepath)
+#     parameter_list = parameters_to_list(filepath)
+
+#     for param_dict in parameter_list:
+#         print(param_dict['kymin'], param_dict['filename'])
+
+#         # for sim_filepath in param_dict['sim_files']:
+#         #     filename = os.path.basename(sim_filepath)
+#         #     print(sim_filepath)
+#     print('')
