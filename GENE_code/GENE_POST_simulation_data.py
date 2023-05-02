@@ -160,6 +160,3 @@ if __name__ == "__main__":
         print(simulation['suffix'], simulation['status'])
         print('~~~~~~~~~~')
 
-
-
-    
