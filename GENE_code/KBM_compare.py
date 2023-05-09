@@ -5,10 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-from GENE_POST_all_sim_data import simulations_to_list
-# from GENE_POST_omega_data import omega_to_Hz
-from GENE_POST_param_data import parameters_to_list
-
+from GENE_POST_simulation_data import simulation_sorter
+from GENE_POST_param_data import parameter_to_sim_dict
+from GENE_POST_omega_data import omega_to_sim_dict
 
 
 def print_data_points(filepath):
@@ -18,14 +17,16 @@ def print_data_points(filepath):
         beta_dir = os.path.join(filepath, beta_name)
 
         print(beta_dir)
-        simulation_list = simulations_to_list(beta_dir)
+        simulation_list = simulation_sorter(beta_dir)
         # print(len(simulation_list))
         for simulation_dict in simulation_list:
-            param_dict = simulation_dict['parameter_file']
-            omega_dict = simulation_dict['omega_file']
+            parameter_to_sim_dict(simulation_dict)
+            omega_to_sim_dict(simulation_dict)
+            param_dict = simulation_dict['parameters']
+            omega_dict = simulation_dict['omega']
 
             parameter_directory = param_dict['filepath']
-            suffix = param_dict['suffix']
+            # suffix = simulation_dict['suffix']
 
             print('beta:', param_dict['beta'])
             print('elec density grad (omn2):',param_dict['omn2'])
@@ -43,14 +44,16 @@ def get_data_points(filepath):
         beta_dir = os.path.join(filepath, beta_name)
 
         print(beta_dir)
-        simulation_list = simulations_to_list(beta_dir)
+        simulation_list = simulation_sorter(beta_dir)
         # print(len(simulation_list))
         for simulation_dict in simulation_list:
-            param_dict = simulation_dict['parameter_file']
-            omega_dict = simulation_dict['omega_file']
+            parameter_to_sim_dict(simulation_dict)
+            omega_to_sim_dict(simulation_dict)
+            param_dict = simulation_dict['parameters']
+            omega_dict = simulation_dict['omega']
 
             parameter_directory = param_dict['filepath']
-            suffix = param_dict['suffix']
+            suffix = simulation_dict['suffix']
             diff_abs_value = get_diff_abs_value(parameter_directory, suffix)
 
             KBM_limit_list.append(diff_abs_value)
@@ -89,16 +92,17 @@ def ref_values(filepath):
     scanfile_list = os.listdir(ref_directory)
 
     for scanfile in scanfile_list:
-            scanfile_dir = os.path.join(ref_directory, scanfile)
+        scanfile_dir = os.path.join(ref_directory, scanfile)
 
-            simulation_list = simulations_to_list(scanfile_dir)
-            for simulation_dict in simulation_list:
-                param_dict = simulation_dict['parameter_file']
-                
-                if param_dict['kymin'] == 0.1:
-                    ref_beta = param_dict['beta']
-                    ref_elec_dens = param_dict['omn2']
-                    break
+        simulation_list = simulation_sorter(scanfile_dir)
+        for simulation_dict in simulation_list:
+            parameter_to_sim_dict(simulation_dict)
+            param_dict = simulation_dict['parameters']
+
+            if param_dict['kymin'] == 0.1:
+                ref_beta = param_dict['beta']
+                ref_elec_dens = param_dict['omn2']
+                break
 
     return ref_beta, ref_elec_dens
             
@@ -106,7 +110,6 @@ def ref_values(filepath):
 
 def KBM_color_plot(filepath, color_bar = 'local', show_z_vals = False):
     beta_list, density_list, KBM_limit_list = get_data_points(filepath)
-
 
     beta_den_dict = {}
     for i in range(len(KBM_limit_list)):
@@ -122,15 +125,11 @@ def KBM_color_plot(filepath, color_bar = 'local', show_z_vals = False):
 
     ref_beta, ref_elec_dens = ref_values(filepath)
 
-
     if (ref_beta, ref_elec_dens) in beta_den_dict:
         # Retrieve the z value for a given (x, y) tuple
         ref_diff_abs = beta_den_dict[(ref_beta, ref_elec_dens)]    
     else:
         print(f"ref_beta {ref_beta} is not found in beta_list.")
-
-
-    
 
 
     if color_bar == 'absolute':
