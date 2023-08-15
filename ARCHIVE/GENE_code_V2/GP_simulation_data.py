@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
-from GENE_POST_convergence_check import convergence_check
-from GENE_POST_file_checks import suffix_from_filename, file_check
+from GP_convergence_check import convergence_check
+from fusion_research.GENE_code_V2.GP_file_functions import suffix_from_filename, file_check
 
 
 
@@ -69,6 +69,10 @@ def simulation_sorter(filepath, sort_type = 'CONVERGED'):
     return sorted_sim_list
 
 
+
+
+
+
 # ~~~AUXILLARY FUNCTIONS~~~
 
 def parameters_filepaths(directory):
@@ -91,6 +95,9 @@ def parameters_filepaths(directory):
                 param_filepath_list.remove(param_filepath)
 
     return param_filepath_list
+
+
+
 
 
 

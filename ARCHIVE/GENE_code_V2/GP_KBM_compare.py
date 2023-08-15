@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-from GENE_POST_simulation_data import simulation_sorter
-from GENE_POST_param_data import parameter_to_sim_dict
-from GENE_POST_omega_data import omega_to_sim_dict
+from GP_simulation_data import simulation_sorter
+from fusion_research.GENE_code_V2.GP_parameter_data import parameter_to_sim_dict
+from GP_omega_data import omega_to_sim_dict
 
 
 def print_data_points(filepath):

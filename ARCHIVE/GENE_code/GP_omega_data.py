@@ -3,8 +3,8 @@
 # This code will go into all the sub-directories and extract all omega data 
 import os
 import numpy as np
-from GENE_POST_param_data import parameter_to_sim_dict
-from GENE_POST_file_checks import suffix_from_filename, file_check
+from GP_param_data import parameter_to_sim_dict
+from GP_file_checks import suffix_from_filename, file_check
 
 
 
