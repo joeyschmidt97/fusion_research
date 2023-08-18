@@ -30,23 +30,23 @@ def nrg_filepath_to_dict(nrg_filepath: str, n_spec: int, debug: bool = False):
     # Helper function to generate the base structure of the species energy dictionary
     def create_spec_nrg_dict():
         return {
-            'n_mag':      {'value': [], 'units': 'cs/a'},
-            'u_par_mag':  {'value': [], 'units': 'cs/a'},
-            'T_par_mag':  {'value': [], 'units': 'cs/a'},
-            'T_perp_mag': {'value': [], 'units': 'cs/a'},
-            'Gamma_ES':   {'value': [], 'units': 'cs/a'},
-            'Gamma_EM':   {'value': [], 'units': 'cs/a'},
-            'Q_ES':       {'value': [], 'units': 'cs/a'},
-            'Q_EM':       {'value': [], 'units': 'cs/a'},
-            'Pi_ES':      {'value': [], 'units': 'cs/a'},
-            'Pi_EM':      {'value': [], 'units': 'cs/a'}
+            'n_mag':      [],
+            'u_par_mag':  [],
+            'T_par_mag':  [],
+            'T_perp_mag': [],
+            'Gamma_ES':   [],
+            'Gamma_EM':   [],
+            'Q_ES':       [],
+            'Q_EM':       [],
+            'Pi_ES':      [],
+            'Pi_EM':      []
         }
 
     # Extract the keys from the base structure for later use
     spec_nrg_keys = list(create_spec_nrg_dict().keys())
 
     # Initialize the main dictionary to store all data
-    nrg_dict = {'time': {'value': [], 'units': 's'}}
+    nrg_dict = {'time': []}
     for i in range(n_spec):
         species_number = i + 1
         for key_name in spec_nrg_keys:
@@ -61,18 +61,18 @@ def nrg_filepath_to_dict(nrg_filepath: str, n_spec: int, debug: bool = False):
             
             # If there's only one item in the line, it's a timestamp
             if len(items) == 1:
-                nrg_dict['time']['value'].append(float(items[0]))
+                nrg_dict['time'].append(float(items[0]))
                 spec_count = 0
             else:
                 # Otherwise, parse the species energy values
                 spec_count += 1
                 for j, key_name in enumerate(spec_nrg_keys):    #j values refer to columns in nrg file
-                    nrg_dict[key_name + str(spec_count)]['value'].append(float(items[j]))
+                    nrg_dict[key_name + str(spec_count)].append(float(items[j]))
 
     # Convert lists to numpy arrays for efficiency
     for key in nrg_dict.keys():
         if 'value' in nrg_dict[key]:
-            nrg_dict[key]['value'] = np.array(nrg_dict[key]['value'])
+            nrg_dict[key] = np.array(nrg_dict[key])
 
     # Extract meta information like filename, directory path, and suffix
     nrg_file = os.path.basename(nrg_filepath)

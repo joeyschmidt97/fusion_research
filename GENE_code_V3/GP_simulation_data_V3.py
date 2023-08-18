@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import pandas as pd
 from GP_file_functions_V3 import suffix_from_filename, file_check, string_to_list, find_filetype_files
 from GP_criteria_functions_V3 import criteria_parser, criteria_dict_checker
 
@@ -33,19 +34,23 @@ def filepath_to_simulation_dict_list(filepath_list, criteria_list=[], load_files
 
     if debug: start_time = time.time()
 
-    # Convert string inputs to list if they are not already lists
-    filepath_list = string_to_list(filepath_list)
-    criteria_list = string_to_list(criteria_list)
-    load_files = string_to_list(load_files)
-
     simulation_dict_list = []
 
-    # Convert the criteria list into a list of dictionaries for easier checking
+    # Convert string inputs to list if they are not already lists
+    filepath_list = string_to_list(filepath_list)
+    common_path = os.path.commonpath(filepath_list)
+
+    # Convert the criteria list into a list, and then to a list of dictionaries for easier checking
+    criteria_list = string_to_list(criteria_list)
     criteria_dict_list = criteria_parser(criteria_list)
 
+    load_files = string_to_list(load_files)
+
+        
     # Search for 'parameters' files up to a specified depth
     max_depth = 2
     parameter_filepath_list = find_filetype_files(filepath_list, 'parameters', max_depth)
+
 
     # Handle case where no 'parameters' files are found
     if len(parameter_filepath_list) == 0:
@@ -58,7 +63,7 @@ def filepath_to_simulation_dict_list(filepath_list, criteria_list=[], load_files
             suffix = suffix_from_filename(parameter_filename)
 
             # Convert file paths to dictionaries containing simulation information
-            simulation_dict = simulation_filepath_to_dict(simulation_directory, suffix, load_files)
+            simulation_dict = simulation_filepath_to_dict(simulation_directory, common_path, suffix, load_files)
 
             # Check if all criteria are satisfied
             all_criteria_pass = all_criteria_checker(simulation_dict, criteria_dict_list, debug)
@@ -86,7 +91,7 @@ def filepath_to_simulation_dict_list(filepath_list, criteria_list=[], load_files
 # BASE FUNCTION TO CONVERT simulation TO DICT----------------------------------------------------
 #------------------------------------------------------------------------------------------------
 
-def simulation_filepath_to_dict(simulation_filepath:str, suffix:str, load_files:list = []):
+def simulation_filepath_to_dict(simulation_filepath:str, common_path:str, suffix:str, load_files:list = []):
     """
     Convert a simulation filepath to a dictionary containing simulation information.
 
@@ -107,9 +112,11 @@ def simulation_filepath_to_dict(simulation_filepath:str, suffix:str, load_files:
     - dict: A dictionary containing information extracted from the simulation 
             and the specified files.
     """
-    
+    #Extract unique portion of simulation filepath
+    unique_simulation_filepath = os.path.relpath(simulation_filepath, common_path)
+
     # Base simulation dictionary with the directory and suffix
-    simulation_dict = {'filepath': simulation_filepath,
+    simulation_dict = {'filepath': unique_simulation_filepath,
                        'suffix': suffix}
     
     # If suffix has a '.dat', no change is needed, otherwise prepend an underscore
@@ -200,6 +207,86 @@ def all_criteria_checker(simulation_dict:dict, criteria_dict_list:list, debug:bo
         print('////////////////////')
 
     return passed_all_criteria
+
+#------------------------------------------------------------------------------------------------
+# Function to printout specific simulation data--------------------------------------------------
+#------------------------------------------------------------------------------------------------
+
+def printout_simulation_data(filepath_list, criteria_list=[], load_files='parameters', debug:bool=False):
+    # Convert string inputs to list if they are not already lists
+    filepath_list = string_to_list(filepath_list)
+    criteria_list = string_to_list(criteria_list)
+    load_files = string_to_list(load_files)
+
+    simulation_dict_list = filepath_to_simulation_dict_list(filepath_list, criteria_list, load_files, debug)
+    criteria_dict_list = criteria_parser(criteria_list)
+
+    temp_simulation_dict_list = []
+
+    for simulation_dict in simulation_dict_list:
+        temp_simulation_dict = {}
+
+        # Check if all criteria are satisfied
+        all_criteria_pass = all_criteria_checker(simulation_dict, criteria_dict_list, debug)
+
+        if all_criteria_pass:
+            for criteria_dict in criteria_dict_list:
+                units = criteria_dict['units']
+                variable_key = criteria_dict['variable_key']
+
+                for sim_key in simulation_dict:
+                    
+                    if isinstance(simulation_dict[sim_key], dict):
+                        current_dict = simulation_dict[sim_key]
+                        
+                        for current_key in current_dict:
+                            unitless = (units==None)
+                            
+                            if unitless:
+                                if variable_key==current_key:
+                                    temp_simulation_dict[current_key] = current_dict[current_key]
+                            else:
+                                if (variable_key in current_key) and (units in current_key):
+                                    temp_simulation_dict[current_key] = current_dict[current_key]
+                            
+                    else:
+                        temp_simulation_dict[sim_key] = simulation_dict[sim_key]
+            
+            temp_simulation_dict_list.append(temp_simulation_dict)
+
+
+    df = pd.DataFrame(temp_simulation_dict_list)
+    print(df)   
+
+#------------------------------------------------------------------------------------------------
+# Function to printout specific simulation data--------------------------------------------------
+#------------------------------------------------------------------------------------------------
+
+def species_value_from_simulation(simulation_dict:dict, variable_key:str, species_name:str):
+    variable_species_key = '' 
+    parameters_dict = simulation_dict['parameters_dict']
+
+    for i in range(parameters_dict['n_spec']):
+        spec_num = i + 1
+        spec_name = 'name' + str(spec_num)
+    
+        if parameters_dict[spec_name].strip("'") == species_name.strip("'"):
+            variable_species_key = variable_key + str(spec_num)
+
+    if variable_species_key:
+        pass
+    else:
+        print('No such key', variable_key, 'could be found. Check you have the right variable name and species label used in the GENE parameters file.')
+        
+        GENE_spec_label = []
+        for i in range(parameters_dict['n_spec']):
+            spec_num = i + 1
+            spec_name = 'name' + str(spec_num)
+        
+            GENE_spec_label.append(parameters_dict[spec_name].strip("'"))
+        print('GENE species labels:', GENE_spec_label)
+
+    return variable_species_key
 
 #------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------

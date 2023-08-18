@@ -156,7 +156,7 @@ def criteria_dict_checker(criteria_dict_list:list, global_crit_check:list, dict_
                     if criterion_is_variable:
                         # TODO: Convert variable_key to specific units
 
-                        ind_crit_pass_list.append(True)
+                        ind_crit_pass_list.append(False)
 
                         if debug: print(variable_key, '==', variable_key, '// units:', units)
                     else:
@@ -165,7 +165,8 @@ def criteria_dict_checker(criteria_dict_list:list, global_crit_check:list, dict_
 
                         if debug: print('still need to do units conversions checking', units, '//', criteria, '//', variable_key, '=', dict_to_check[variable_key])
                         
-                        ind_crit_pass_list.append(eval(criteria, dict_to_check))
+                        # ind_crit_pass_list.append(eval(criteria, dict_to_check))
+                        ind_crit_pass_list.append(False)
             # If variable_key is not present in dict_to_check, return False
             else: 
                 ind_crit_pass_list.append(False)
