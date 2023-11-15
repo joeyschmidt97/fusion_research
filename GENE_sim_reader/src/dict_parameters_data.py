@@ -24,7 +24,6 @@ def parameters_filepath_to_dict(parameters_filepath:str, debug:bool = False):
 
 
 
-
 def create_parameters_dict(parameters_filepath:str):
 
     # Create a parameter dictionary using the Parameters class
@@ -35,6 +34,13 @@ def create_parameters_dict(parameters_filepath:str):
     # Add the filename, filepath, and suffix to the parameter dictionary
     parameter_dict['filepath'] = parameters_filepath
     parameter_dict['key_list'] = list(parameter_dict.keys())
+
+    for key, value in parameter_dict.items():
+        if isinstance(value, str):
+            strip_value = value.strip("'")
+            strip_value = strip_value.strip('"')
+            parameter_dict[key] = strip_value
+        
 
     return parameter_dict
 

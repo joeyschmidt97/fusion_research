@@ -62,7 +62,7 @@ def convergence_check(filetype_path:str):
     
     check_empty = (os.stat(omega_filepath).st_size == 0)
     if check_empty:
-        return 'NOT CONVERGED'
+        return 'NOT_CONVERGED'
     else:
         return 'CONVERGED'
 
