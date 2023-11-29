@@ -6,11 +6,45 @@ The output simulation data can be given as a dictionary or pandas dataframe for 
 
 Example use code can be found in `tests/src_tests/simulation_data.ipynb` but an example is given below:
 
+```python
+from GENE_sim_reader.src.dict_simulation_data import filepath_to_simulation_dict_list
+
+# load filepaths as either a list of filepaths or a filepath string
+filepath_list = ['/pscratch/sd/u/username/folder1', '/pscratch/sd/u/username/folder2']
+
+# specify criteria to fetch simulation data
+# Note: if no criteria is set but the quantity is desired for further analysis it must be specified as a string (i.e. "Q_EM")
+criteria1 = ['time<0.05', 'gamma>0', 'Q_ES < 3e-2', 'Q_EM', 'Gamma_ES']
+
+# specify species that you want to fetch data for
+spec = ['e', 'i']
+
+# plug in requirements and fetch simulation data
+simulation_dict_list, _ = filepath_to_simulation_dict_list(filepath_list = filepath, criteria_list = criteria, load_spec = spec)
+
+```
+
+This outputs a list of simulation dictionaries with the specified data fulfilling the criteria.
+
+Simulation dicts have keys information for the simulations such as 'directory', 'suffix', 'status', 'parameters_dict', etc. that can be used to locate and characterize the simulation. Moreover if quantities are specified in the 'criteria_list' the appropriate dict will be loaded that has said quantity (specify 'gamma' and the 'omega_dict' is loaded into the simulation_dict)
+
+The current dictionaries and their quantities are listed below:
+```
+omega_dict > ['gamma','omega']
+nrg_dict   > ['time', 'n_mag' , 'u_par_mag', 'T_par_mag', 'T_perp_mag', 'Gamma_ES', 'Gamma_EM', 'Q_ES', 'Q_EM', 'Pi_ES', 'Pi_EM']
+field_dict > ['time', 'phi', 'apar', 'bpar']
+```
+
 
 
 
 ```python
-from GENE_sim_reader.src.dict_simulation_data import filepath_to_simulation_dict_list
+
+# If criteria is required for other use (i.e. plotting boundaries) it can be called from the function
+simulation_list, criteria_list = filepath_to_simulation_dict_list(filepath_list=filepath, 
+
+criteria_list=criteria1, load_spec=['e', 'i'])
+
 
 
 ```
