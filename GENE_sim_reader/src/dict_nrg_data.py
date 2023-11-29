@@ -2,11 +2,11 @@
 
 import os
 import numpy as np
-from src.utils.file_functions import file_checks, FileError, switch_suffix_file, string_to_list
-from src.criteria_code.criteria_checker import criteria_checker
-from src.filetype_key_lists import nrg_column_keys, nrg_key_list
+from GENE_sim_reader.src.utils.file_functions import file_checks, FileError, switch_suffix_file, string_to_list
+from GENE_sim_reader.src.criteria_code.criteria_checker import criteria_checker
+from GENE_sim_reader.src.filetype_key_lists import nrg_column_keys, nrg_key_list
 
-from src.dict_parameters_data import create_species_tuple
+from GENE_sim_reader.src.dict_parameters_data import create_species_tuple
 
 
 #------------------------------------------------------------------------------------------------

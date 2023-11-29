@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import os
 
-from src.utils.ParIO import Parameters
-from src.utils.file_functions import file_checks, FileError, string_to_list
+from GENE_sim_reader.src.utils.ParIO import Parameters
+from GENE_sim_reader.src.utils.file_functions import file_checks, FileError, string_to_list
 
 #------------------------------------------------------------------------------------------------
 # BASE FUNCTION TO CONVERT PARAMETER TO DICT-----------------------------------------------------

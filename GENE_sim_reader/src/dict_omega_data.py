@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from src.utils.file_functions import file_checks, FileError, switch_suffix_file
-# from criteria_checker.filetype_key_lists_V4 import omega_key_list
+from GENE_sim_reader.src.utils.file_functions import file_checks, FileError, switch_suffix_file
 
 
 #------------------------------------------------------------------------------------------------

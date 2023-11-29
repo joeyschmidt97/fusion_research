@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 import os
 import pandas as pd
-from src.utils.file_functions import suffix_from_filename, string_to_list, switch_suffix_file
-from src.utils.find_buried_filetypes import find_buried_filetypes
+import numpy as np
 
-from src.dict_parameters_data import parameters_filepath_to_dict, create_species_tuple
-from src.dict_omega_data import omega_filepath_to_dict, convergence_check
-from src.dict_nrg_data import nrg_filepath_to_dict
-from src.dict_field_data import field_filepath_to_dict
+from GENE_sim_reader.src.utils.file_functions import suffix_from_filename, string_to_list, switch_suffix_file
+from GENE_sim_reader.src.utils.find_buried_filetypes import find_buried_filetypes
 
+from GENE_sim_reader.src.dict_parameters_data import parameters_filepath_to_dict, create_species_tuple
+from GENE_sim_reader.src.dict_omega_data import omega_filepath_to_dict, convergence_check
+from GENE_sim_reader.src.dict_nrg_data import nrg_filepath_to_dict
+from GENE_sim_reader.src.dict_field_data import field_filepath_to_dict
 
-from src.filetype_key_lists import load_criteria_per_dict, simulation_key_list, time_quantities_from_criteria_list, remove_non_numerical_crit
-from src.criteria_code.criteria_parser import multi_criteria_to_list
-from src.criteria_code.criteria_checker import dict_criteria_check, criteria_array_sifter
+from GENE_sim_reader.src.filetype_key_lists import load_criteria_per_dict, simulation_key_list, time_quantities_from_criteria_list, remove_non_numerical_crit
+from GENE_sim_reader.src.criteria_code.criteria_parser import multi_criteria_to_list
+from GENE_sim_reader.src.criteria_code.criteria_checker import dict_criteria_check, criteria_array_sifter
 
 
 
@@ -110,7 +111,6 @@ def create_sim_dict(parameter_filepath:str, criteria_list:list, load_spec='all')
                        'simulation_filepaths': get_simulation_files(simulation_directory, suffix),
                        'key_list': simulation_key_list,
                        'species_info': create_species_tuple(parameter_filepath)}
-
 
     # Create parameters dict by default
     parameter_dict = parameters_filepath_to_dict(parameter_filepath)
@@ -239,7 +239,14 @@ def sim_filepath_to_df(filepath_list, criteria_list=[], load_spec='all'):
         for key, val in sim.items():
             if isinstance(sim[key], dict):
                 for sub_key, sub_val in val.items():
-                    flat_sim_data[sub_key] = sub_val
+                    
+                    array_list_check = (isinstance(sub_val, list) or isinstance(sub_val, np.ndarray))
+
+                    # if the dict value is a single value, unpack it and add to dict, else just add to dict
+                    if array_list_check and (len(sub_val)==1):
+                        flat_sim_data[sub_key] = sub_val[0]
+                    else:
+                        flat_sim_data[sub_key] = sub_val
             else:
                 flat_sim_data[key] = val
         flat_sim_data_list.append(flat_sim_data)
@@ -248,8 +255,6 @@ def sim_filepath_to_df(filepath_list, criteria_list=[], load_spec='all'):
     sim_df = pd.DataFrame(flat_sim_data_list)
 
     return sim_df
-
-
 
 
 

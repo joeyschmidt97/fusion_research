@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "GENE_sim_reader"
+		},
+		{
+			"path": "instability_analysis"
+		},
+		{
+			"path": "../background_processes"
+		}
+	],
+	"settings": {}
+}
