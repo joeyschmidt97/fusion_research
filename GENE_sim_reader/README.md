@@ -46,7 +46,7 @@ plt.plot(sim_df['kymin'], sim_df['gamma'])
 
 If quantities are specified in the 'criteria_list' the appropriate quantity will be loaded into the dataframe (specify 'gamma' and 'omega' to load them into the dataframe, otherwise, they will not be loaded)
 
-The current quantities and their associated filetypes are listed below:
+The current quantities that can be called from the associated filetypes are listed below:
 
 Data from omega filetype:
 ```
@@ -64,7 +64,7 @@ Data from field filetype:
 ```
 
 ## Warning messages
-Note: Warning messages will output if the criteria is too strict(no simulations fulfill any criteria), simulation data is buried too deep in directories (default search depth is 3 directories deep), quantities are not typed correct (i.e. """QES" , "q_es", "Q_ESs", etc. when correct quantity string is "Q_ES"), no simulations are found (directory is empty or contains no GENE simulation data), and several other errors.
+Note: Warning messages will output if the criteria is too strict (no simulations fulfill any criteria), simulation data is buried too deep in directories (default search depth is 3 directories deep), quantities are not typed correct (i.e. """QES" , "q_es", "Q_ESs", etc. when correct quantity string is "Q_ES"), no simulations are found (directory is empty or contains no GENE simulation data), and several other errors.
 
 # Fetching GENE simulation data as dictionaries
 
