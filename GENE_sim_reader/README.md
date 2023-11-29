@@ -47,10 +47,12 @@ Data from field filetype:
 ['time', 'phi', 'apar', 'bpar']
 ```
 
+## Warning messages
+Note: Warning messages will output if the criteria is too strict(no simulations fulfill any criteria), simulation data is buried too deep in directories (default search depth is 3 directories deep), quantities are not typed correct (i.e. """QES" , "q_es", "Q_ESs", etc. when correct quantity string is "Q_ES"), no simulations are found (directory is empty or contains no GENE simulation data), and several other errors.
 
 # Fetching GENE simulation data as dictionaries
 
-By default, the simulation data is loaded as dictionary types 
+By default, the simulation data is loaded as dictionary types. The pandas dataframe is the preferred method of accessing the simulation data but the dictionaries can be used as follows:
 
 ```python
 from GENE_sim_reader.src.dict_simulation_data import filepath_to_simulation_dict_list
