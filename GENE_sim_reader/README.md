@@ -12,7 +12,7 @@ Example use code can be found in `tests/src_tests/simulation_data.ipynb` but exa
 from GENE_sim_reader.src.dict_simulation_data import sim_filepath_to_df
 
 # load filepaths as either a list of filepaths or a filepath string
-filepath_list = ['/pscratch/sd/u/username/folder1', '/pscratch/sd/u/username/folder2']
+filepath = ['/pscratch/sd/u/username/folder1', '/pscratch/sd/u/username/folder2']
 
 # specify criteria to fetch simulation data
 # Note: if no criteria is set but the quantity is desired for further analysis it must be specified as a string (i.e. "Q_EM")
@@ -27,6 +27,22 @@ sim_df = sim_filepath_to_df(filepath_list = filepath, criteria_list = criteria1,
 ```
 
 This outputs a pandas dataframe with the specified data fulfilling the criteria given in each column of the dataframe.
+
+For example, this dataframe can be used in other workflows like plotting data or finding fingerprints for instabilities. A simply example is given below for plotting the growth rates across several simulations.
+```python
+import matplotlib.pyplot as plt
+
+from GENE_sim_reader.src.dict_simulation_data import sim_filepath_to_df
+
+filepath = '/pscratch/sd/u/username/folder1'
+criteria = 'gamma' #fetches gamma from omega filetype, if 'gamma' is not specified then sim_df['gamma'] will throw an error
+
+sim_df = sim_filepath_to_df(filepath_list=filepath, criteria_list=criteria)
+
+plt.plot(sim_df['kymin'], sim_df['gamma'])
+
+```
+
 
 If quantities are specified in the 'criteria_list' the appropriate quantity will be loaded into the dataframe (specify 'gamma' and 'omega' to load them into the dataframe, otherwise, they will not be loaded)
 
